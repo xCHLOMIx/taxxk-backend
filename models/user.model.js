@@ -22,7 +22,7 @@ const userSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-userSchema.statics.signUp = async function(username, email, passcode) {
+userSchema.statics.signUp = async function (username, email, passcode) {
     let errors = {};
 
     if (!username) {
@@ -31,10 +31,8 @@ userSchema.statics.signUp = async function(username, email, passcode) {
 
     if (!email) {
         errors.email = "Email is required";
-    }
-
-    if (!validator.isEmail(email)) {
-        errors.email = "Email is not valid";
+    } else if (!validator.isEmail(email)) {
+        errors.email = "Email must include '@' and a domain";
     }
 
     if (!passcode || passcode.trim() === '') {
@@ -89,3 +87,7 @@ userSchema.statics.signin = async function (username, passcode) {
 
     return user;
 };
+
+const User = mongoose.model('User', userSchema);
+
+export default User;
