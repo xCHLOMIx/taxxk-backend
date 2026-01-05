@@ -40,3 +40,8 @@ export const signIn = async (req, res) => {
         res.status(400).json({ errors });
     }
 };
+
+export const signOut = (req, res) => {
+    res.clearCookie('authToken');
+    res.status(200).json({ message: 'Successfully signed out!'})
+}
