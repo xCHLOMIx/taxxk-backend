@@ -21,7 +21,7 @@ const taskSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-taskSchema.statics.createTask = async function(title, description, user) {
+taskSchema.statics.createTask = async function(title, description="", user) {
     let errors = {};
 
     if (!title) {

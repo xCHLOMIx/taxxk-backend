@@ -5,12 +5,12 @@ export const authMiddleware = async (req, res, next) => {
     const token = req.cookies.authToken;
 
     if (!token) {
-        return res.status(401).json({ errors: { general: 'Access denied. No authentication token provided.' } });
+        return res.status(401).json({ errors: { general: 'Access denied. Log in first.' } });
     }
 
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.id);
+        const user = await User.findById(decoded.payload);
 
         if (!user) {
             return res.status(401).json({ errors: { general: 'Access denied. User not found or no longer exists.' } });

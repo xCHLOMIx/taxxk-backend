@@ -11,8 +11,6 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true,
-        unique: true,
         lowercase: true,
         trim: true
     },
@@ -42,6 +40,7 @@ userSchema.statics.signUp = async function (username, email, passcode) {
     }
 
     const existingUser = await this.findOne({ username });
+
     if (existingUser) {
         errors.username = "Username is already in use";
     }
@@ -50,7 +49,7 @@ userSchema.statics.signUp = async function (username, email, passcode) {
         throw new Error(JSON.stringify(errors));
     } else {
         const hashedPasscode = await bcrypt.hash(passcode, 10);
-        const user = await this.create({ username, passcode: hashedPasscode });
+        const user = await this.create({ username, email, passcode: hashedPasscode });
 
         return user;
     }
