@@ -2,6 +2,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import AuthRoutes from './routes/auth.route.js';
 import TaskRoutes from './routes/task.route.js';
+import SessionRoutes from './routes/session.route.js';
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use((req, _, next) => {
 // App routes
 app.use('/api/auth', AuthRoutes);
 app.use('/api/tasks', TaskRoutes);
+app.use('/api/sessions', SessionRoutes);
 
 // Default endpoint
 app.get('/', (req, res) => {
