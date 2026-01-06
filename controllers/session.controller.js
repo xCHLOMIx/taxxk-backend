@@ -1,10 +1,8 @@
 import Session from '../models/session.model.js';
 
-// Create a new session
 export const createSession = async (req, res) => {
     const { duration, tasks } = req.body;
     const user = req.user.id;
-    console.log(duration)
 
     try {
         const session = await Session.createSession(user, duration, tasks);

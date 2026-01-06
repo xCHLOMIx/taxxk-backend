@@ -23,7 +23,6 @@ sessionSchema.statics.createSession = async function (user, duration, tasks) {
     if (!tasks || tasks.length === 0) {
         errors.tasks = "At least one task must be provided to start a session.";
     }
-    console.log(duration)
     if (!duration) {
         errors.duration = "Duration is required.";
     } else if (duration <= 0) {
