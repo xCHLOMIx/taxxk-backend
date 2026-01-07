@@ -10,6 +10,11 @@ const sessionSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
+    status: {
+        type: String,
+        enum: ["active", "completed", "paused", "inactive"],
+        default: "inactive"
+    },
     tasks: {
         type: [mongoose.Schema.Types.ObjectId],
         ref: "Task",
