@@ -41,7 +41,7 @@ taskSchema.statics.createTask = async function(title, description="", user) {
         
         return task;
     }
-}
+};
 
 const Task = mongoose.model("Task", taskSchema);
 
