@@ -46,3 +46,29 @@ export const deleteTask = async (req, res) => {
         res.status(500).json({ errors: { general: error.message } });
     }
 };
+
+export const updateTask = async (req, res) => {
+    const taskId = req.params.id;
+    const { title, description } = req.body;
+    const user = req.user.id;
+
+    try {
+        const task = await Task.findOneAndUpdate(
+            { _id: taskId, user: user },
+            { title, description },
+            { new: true }
+        );
+
+        if (task.title === title || task.description === description || !title && !description) {
+            return res.status(400).json({ errors: { general: 'No changes detected to update' } });
+        };
+        
+        if (!task) {
+            return res.status(404).json({ errors: { general: 'Task not found' } });
+        }
+
+        res.status(200).json({ message: 'Task successfully updated', task });
+    } catch (error) {
+        res.status(500).json({ errors: { general: error.message } });
+    }
+};
