@@ -37,14 +37,6 @@ export const startSession = async (req, res) => {
             errors.general = "Session is already active.";
         }
 
-        const tasks = session.tasks;
-
-        if (!tasks || tasks.length === 0) {
-            errors.general = "Add tasks to start session.";
-        } else {
-            const existingTasks = await Task.updateMany({ _id: { $in: tasks } }, { $set: { status: 'in-progress' } });
-        }
-
         if (Object.keys(errors).length > 0) {
             throw new Error(JSON.stringify(errors));
         }
