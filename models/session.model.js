@@ -43,31 +43,6 @@ sessionSchema.statics.createSession = async function (user, duration, tasks) {
     return session;
 };
 
-sessionSchema.statics.startSession = async function (sessionId) {
-    let errors = {};
-
-    if (!sessionId) {
-        errors.sessionId = "Session ID is required to start a session.";
-    }
-
-    const session = await this.findById(sessionId);
-
-    if (!session) {
-        errors.session = "Session not found.";
-    } else if (session.status === "active") {
-        errors.status = "Session is already active.";
-    }
-
-    if (Object.keys(errors).length > 0) {
-        throw new Error(JSON.stringify(errors));
-    }
-
-    session.status = "active";
-    await session.save();
-
-    return session;
-};
-
 const Session = mongoose.model("Session", sessionSchema);
 
 export default Session;
