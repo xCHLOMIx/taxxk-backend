@@ -25,21 +25,23 @@ export const startSession = async (req, res) => {
     let errors = {};
 
     if (!id) {
-        errors.general = "Session ID is required to start a session.";
+        errors.general = "Session ID required";
     }
 
     try {
-        const session = await Session.findOneAndUpdate({ _id: id }, { $set: { status: 'active' } });
+        const session = await Session.findOne({ _id: id });
 
         if (!session) {
-            errors.general = "Session not found.";
+            errors.general = "Session not found";
         } else if (session.status === "active") {
-            errors.general = "Session is already active.";
+            errors.general = "Session already active";
         }
 
         if (Object.keys(errors).length > 0) {
             throw new Error(JSON.stringify(errors));
         }
+
+        await Session.findOneAndUpdate({ _id: id }, { $set: { status: 'active' } });
 
         res.status(200).json({ message: 'Session started', sessionId: id });
     } catch (error) {
@@ -57,23 +59,22 @@ export const endSession = async (req, res) => {
     const { id } = req.params;
     const { duration } = req.body;
     let errors = {};
-    console.log
 
     if (!id) {
-        errors.general = "Session ID is required.";
+        errors.general = "Session ID required";
     }
 
     if (duration === undefined || duration === null) {
-        errors.general = "Duration is required.";
+        errors.general = "Duration required";
     }
 
     try {
         const session = await Session.findOne({ _id: id });
 
         if (!session) {
-            errors.general = "Session not found.";
+            errors.general = "Session not found";
         } else if (session.status === "completed") {
-            errors.general = "Session is already completed.";
+            errors.general = "Session already completed";
         }
 
         if (Object.keys(errors).length > 0) {
@@ -83,7 +84,7 @@ export const endSession = async (req, res) => {
         let remainingDuration = session.duration - duration;
 
         if (remainingDuration > 0) {
-          return res.status(400).json({ errors: { general: "Session is not yet complete consider pausing ?" } });
+            return res.status(400).json({ errors: { general: "Session incomplete, pause instead" } });
         }
 
         await Session.findOneAndUpdate({ _id: id }, { $set: { status: 'completed', duration: 0 } });
@@ -106,23 +107,28 @@ export const pauseSession = async (req, res) => {
     let errors = {};
 
     if (!id) {
-        errors.general = "Session ID.";
+        errors.general = "Session ID required";
+    }
+
+    if (duration === undefined || duration === null || duration <= 0) {
+        errors.duration = "Duration must be positive";
     }
 
     try {
-        const session = await Session.findOneAndUpdate({ _id: id }, { $set: { status: 'paused', duration: duration } });
+        const session = await Session.findOne({ _id: id });
 
         if (!session) {
-            errors.general = "Session not found.";
+            errors.general = "Session not found";
         } else if (session.status !== "active") {
-            errors.general = "Only active sessions can be paused.";
-        } else if (duration <= 0) {
-            errors.duration = "Duration must be a positive number.";
+            errors.general = "Only active sessions can be paused";
         }
 
         if (Object.keys(errors).length > 0) {
             throw new Error(JSON.stringify(errors));
         }
+
+        await Session.findOneAndUpdate({ _id: id }, { $set: { status: 'paused', duration: duration } });
+
         res.status(200).json({ message: 'Session paused', sessionId: id });
     } catch (error) {
         let errors = {};
