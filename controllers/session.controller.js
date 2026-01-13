@@ -140,3 +140,57 @@ export const pauseSession = async (req, res) => {
         res.status(400).json({ errors });
     }
 };
+
+export const deleteSession = async (req, res) => {
+    const { id } = req.params;
+    const user = req.user.id;
+    let errors = {};
+
+    if (!id) {
+        errors.general = "Session ID required";
+    }
+
+    try {
+        const session = await Session.findOne({ _id: id, user: user });
+
+        if (!session) {
+            errors.general = "Session not found";
+        }
+
+        if (Object.keys(errors).length > 0) {
+            throw new Error(JSON.stringify(errors));
+        }
+
+        await Session.findByIdAndDelete(id);
+
+        res.status(200).json({ message: 'Session deleted', sessionId: id });
+    } catch (error) {
+        let errors = {};
+        try {
+            errors = JSON.parse(error.message);
+        } catch {
+            errors.general = error.message;
+        }
+        res.status(400).json({ errors });
+    }
+};
+
+export const fetchUserSessions = async (req, res) => {
+    const user = req.user.id;
+
+    try {
+        const sessions = await Session.find({ user: user })
+            .populate('tasks', 'name description')
+            .sort({ createdAt: -1 });
+
+        res.status(200).json({ sessions });
+    } catch (error) {
+        let errors = {};
+        try {
+            errors = JSON.parse(error.message);
+        } catch {
+            errors.general = error.message;
+        }
+        res.status(400).json({ errors });
+    }
+};
