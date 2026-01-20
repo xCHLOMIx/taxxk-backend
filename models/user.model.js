@@ -35,8 +35,8 @@ userSchema.statics.signUp = async function (username, email, passcode) {
 
     if (!passcode || passcode.trim() === '') {
         errors.passcode = 'Passcode is required';
-    } else if (passcode.length !== 4) {
-        errors.passcode = 'Passcode must be 4 characters long';
+    } else if (passcode.length !== 6) {
+        errors.passcode = 'Passcode must be 6 characters long';
     }
 
     const existingUser = await this.findOne({ username });

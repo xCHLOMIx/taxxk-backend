@@ -1,5 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
+import cors from 'cors';
 import AuthRoutes from './routes/auth.route.js';
 import TaskRoutes from './routes/task.route.js';
 import SessionRoutes from './routes/session.route.js';
@@ -8,6 +9,10 @@ const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 
 // Clean middleware
 app.use((req, _, next) => {
