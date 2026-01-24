@@ -64,8 +64,8 @@ userSchema.statics.signin = async function (username, passcode) {
 
     if (!passcode || passcode.trim() === '') {
         errors.passcode = 'Passcode is required';
-    } else if (passcode.length !== 4) {
-        errors.passcode = 'Passcode must be 4 characters long';
+    } else if (passcode.length !== 6) {
+        errors.passcode = 'Passcode must be 6 characters long';
     }
 
     if (Object.keys(errors).length > 0) throw new Error(JSON.stringify(errors));
